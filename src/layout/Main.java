@@ -12,6 +12,8 @@ public class Main {
 			Connection c = DriverManager.getConnection(
 					"jdbc:mysql://localhost/computer-database-db?"
 							+ "user=admincdb&password=qwerty123");
+			
+			System.out.println("test");
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
