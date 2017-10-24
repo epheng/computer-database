@@ -10,10 +10,6 @@ public class Computer {
 	private Date discontinuedDate;
 	private Company manufacturer;
 	
-	public Computer() {
-		
-	}
-	
 	public int getId() {
 		return id;
 	}
