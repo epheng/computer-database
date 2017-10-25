@@ -20,18 +20,39 @@ public class RequestData {
 			setupFields(fields);
 	}
 	
+	/**
+	 * Setup the fields of the class
+	 * @param fields
+	 */
 	public void setupFields(String[] fields) {
-		if(rt == RequestType.SHOW_COMPUTER || rt == RequestType.DELETE) {
-			computer_id = Integer.parseInt(fields[0]);
+		try {
+			if(rt == RequestType.SHOW_COMPUTER || rt == RequestType.DELETE) {
+				computer_id = Integer.parseInt(fields[0]);
+			}
+			else if(rt == RequestType.CREATE) {
+				computer_name = fields[0];
+				introduced_date = parseTimestamp(fields[1]);
+				discontinued_date = parseTimestamp(fields[2]);
+				company_id = Integer.parseInt(fields[3]);
+			}
+			else if(rt == RequestType.UPDATE) {
+				computer_id = Integer.parseInt(fields[0]);
+				computer_name = fields[1];
+				introduced_date = parseTimestamp(fields[2]);
+				discontinued_date = parseTimestamp(fields[3]);
+				company_id = Integer.parseInt(fields[4]);
+			}
 		}
-		else if(rt == RequestType.CREATE || rt == RequestType.UPDATE) {
-			computer_name = fields[0];
-			introduced_date = parseTimestamp(fields[1]);
-			discontinued_date = parseTimestamp(fields[2]);
-			company_id = Integer.parseInt(fields[3]);
+		catch(NumberFormatException e) {
+			System.out.println("bad number format.");
 		}
 	}
 	
+	/**
+	 * Takes a date in a string type format and returns it in a Timestamp type 
+	 * @param s
+	 * @return
+	 */
 	public Timestamp parseTimestamp(String s) {
 		try {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
