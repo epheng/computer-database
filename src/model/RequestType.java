@@ -1,4 +1,4 @@
-package layout;
+package model;
 
 // the enumeration of all the different request types
 public enum RequestType {

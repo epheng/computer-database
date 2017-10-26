@@ -1,9 +1,13 @@
-package layout;
+package ui;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
+
+import model.RequestData;
+import model.RequestType;
+import persistence.DatabaseService;
+import service.DatabaseConnection;
 
 public class Main {
 	
@@ -20,9 +24,6 @@ public class Main {
 	public static void main(String[] args) throws SQLException, ClassNotFoundException {
 		
 		Connection conn = null;
-		final String URL = "jdbc:mysql://localhost:3306/computer-database-db";
-		final String USER = "admincdb";
-		final String PWD = "qwerty123";
 		
 		DatabaseService ds = null;
 		String s = "";
@@ -32,7 +33,7 @@ public class Main {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			// Connection to the database
-			conn = DriverManager.getConnection(URL, USER, PWD);
+			conn = DatabaseConnection.getInstance();
 			
 			// List of options
 			System.out.print("1 - list computers\n" +
