@@ -1,4 +1,4 @@
-package model;
+package service;
 
 // the enumeration of all the different request types
 public enum RequestType {

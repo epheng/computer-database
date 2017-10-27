@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db";
+	private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	private static final String USER = "admincdb";
 	private static final String PWD = "qwerty123";
 	
@@ -20,7 +20,7 @@ public class DatabaseConnection {
 	public static Connection getInstance() {
 		if(conn == null) {
 			try {
-				conn = DriverManager.getConnection(URL, USER, PWD);
+ 				conn = DriverManager.getConnection(URL, USER, PWD);
 			}
 			catch(SQLException e) {
 				System.out.println("Database connection failed");
