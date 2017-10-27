@@ -31,7 +31,6 @@ public class Main {
 		String[] data = null;
 		
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			conn = DatabaseConnection.getInstance();
 			
 			System.out.print("1 - list computers\n" +

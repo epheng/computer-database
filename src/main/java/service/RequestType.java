@@ -1,5 +1,6 @@
 package service;
 
+
 // the enumeration of all the different request types
 public enum RequestType {
 	LIST_COMPUTERS,
