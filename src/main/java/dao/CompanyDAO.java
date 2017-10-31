@@ -1,6 +1,5 @@
 package dao;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,23 +12,23 @@ import model.Company;
 import service.DatabaseConnection;
 
 public class CompanyDAO {
-	
+
 	private static CompanyDAO instance = null;
-	
+
 	public Connection conn = DatabaseConnection.getInstance();
 	public CompanyMapper mapper = CompanyMapper.getInstance();
-	
+
 	private String listQuery = "SELECT * FROM company";
-	
+
 	private CompanyDAO() {}
-	
+
 	public static CompanyDAO getInstance() {
 		if(instance == null) {
 			instance = new CompanyDAO();
 		}
 		return instance;
 	}
-	
+
 	public List<Company> listAllCompanies() {
 		List<Company> companyList = null;
 		try(PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
@@ -45,5 +44,5 @@ public class CompanyDAO {
 		}
 		return companyList;
 	}
-	
+
 }

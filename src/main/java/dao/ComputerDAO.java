@@ -1,6 +1,5 @@
 package dao;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,27 +13,27 @@ import model.Computer;
 import service.DatabaseConnection;
 
 public class ComputerDAO {
-	
+
 	private static ComputerDAO instance = null;
-	
+
 	public Connection conn = DatabaseConnection.getInstance();
 	public ComputerMapper mapper = ComputerMapper.getInstance();
-	
+
 	private String listQuery = "SELECT * FROM computer";
 	private String findQuery = "SELECT * FROM computer WHERE id = ?";
 	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
 	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String updateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	
+
 	private ComputerDAO() {}
-	
+
 	public static ComputerDAO getInstance() {
 		if(instance == null) {
 			instance = new ComputerDAO();
 		}
 		return instance;
 	}
-	
+
 	public List<Computer> listAllComputers() {
 		List<Computer> computerList = null;
 		try(PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
@@ -50,7 +49,7 @@ public class ComputerDAO {
 		}
 		return computerList;
 	}
-	
+
 	public Computer findComputerById(int id) {
 		Computer computer = null;
 		try(PreparedStatement prepStmt = conn.prepareStatement(findQuery)) {
@@ -66,7 +65,7 @@ public class ComputerDAO {
 		}
 		return computer;
 	}
-	
+
 	public void deleteComputerById(int id) {
 		try(PreparedStatement prepStmt = conn.prepareStatement(deleteQuery)) {
 			prepStmt.setInt(1, id);
@@ -77,7 +76,7 @@ public class ComputerDAO {
 			e.printStackTrace();			
 		}
 	}
-	
+
 	public void createComputer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
 		try(PreparedStatement prepStmt = conn.prepareStatement(createQuery)) {
 			prepStmt.setString(1, name);
@@ -91,7 +90,7 @@ public class ComputerDAO {
 			e.printStackTrace();			
 		}
 	}
-	
+
 	public void updateComputerById(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
 		try(PreparedStatement prepUpdateStmt = conn.prepareStatement(updateQuery)) {
 			Computer originalComputer = findComputerById(id);
@@ -113,5 +112,5 @@ public class ComputerDAO {
 			e.printStackTrace();
 		}
 	}
-	
+
 }
