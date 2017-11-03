@@ -22,6 +22,7 @@ public class CompanyMapper {
 	public Company toEntity(ResultSet rs) {
 		Company company = new Company();
 		try {
+			company.setId(rs.getInt("id"));
 			company.setName(rs.getString("name"));
 		}
 		catch(SQLException e) {

@@ -19,7 +19,10 @@ public class DatabaseService {
 		this.rd = rd;
 	}
 	
+	
+	
 	/**
+	 * FOR COMMAND LINE
 	 * Method that creates a statement and
 	 * calls the appropriate execution method depending on the request type
 	 * @throws SQLException

@@ -4,6 +4,10 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import dao.CompanyDAO;
+import dto.CompanyDTO;
+import dto.ComputerDTO;
+import model.Company;
 import model.Computer;
 
 public class ComputerMapper {
@@ -22,6 +26,7 @@ public class ComputerMapper {
 	public Computer toEntity(ResultSet rs) {
 		Computer computer = new Computer();
 		try {
+			computer.setId(rs.getInt("id"));
 			computer.setName(rs.getString("name"));
 			computer.setIntroduced(rs.getTimestamp("introduced"));
 			computer.setDiscontinued(rs.getTimestamp("discontinued"));
@@ -31,6 +36,26 @@ public class ComputerMapper {
 			e.printStackTrace();
 		}
 		return computer;
+	}
+	
+	public String removeDateTime(String date) {
+		String[] parts = date.split(" ");
+		return parts[0];
+	}
+	
+	public ComputerDTO toComputerDTO(Computer computer) {
+		String id = "" + computer.getId();
+		String name = computer.getName();
+		String introduced = computer.getIntroduced() == null ? "" : removeDateTime(computer.getIntroduced().toString());
+		String discontinued = computer.getDiscontinued() == null ? "" : removeDateTime(computer.getDiscontinued().toString());
+		String company = computer.getCompanyId() == 0 ? "" : CompanyDAO.getInstance().getCompanyById(computer.getCompanyId()).getName();
+		return new ComputerDTO(id, name, introduced, discontinued, company);
+	}
+	
+	public CompanyDTO toCompanyDTO(Company company) {
+		String id = "" + company.getId();
+		String name = company.getName();
+		return new CompanyDTO(id, name);
 	}
 	
 }

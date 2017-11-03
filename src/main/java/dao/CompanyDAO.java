@@ -19,6 +19,7 @@ public class CompanyDAO {
 	public CompanyMapper mapper = CompanyMapper.getInstance();
 
 	private String listQuery = "SELECT * FROM company";
+	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
 
 	private CompanyDAO() {}
 
@@ -43,6 +44,20 @@ public class CompanyDAO {
 			e.printStackTrace();
 		}
 		return companyList;
+	}
+	
+	public Company getCompanyById(int id) {
+		Company company = null;
+		try(PreparedStatement prepStmt = conn.prepareStatement(getByIdQuery)) {
+			prepStmt.setInt(1, id);
+			ResultSet rs = prepStmt.executeQuery();
+			while(rs.next())
+				company = mapper.toEntity(rs);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return company;
 	}
 
 }

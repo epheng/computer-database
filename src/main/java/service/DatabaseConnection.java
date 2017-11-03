@@ -21,10 +21,14 @@ public class DatabaseConnection {
 	public static Connection getInstance() {
 		if(conn == null) {
 			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
  				conn = DriverManager.getConnection(URL, USER, PWD);
 			}
+			catch(ClassNotFoundException e) {
+				System.out.println(e.getMessage());
+			}
 			catch(SQLException e) {
-				System.out.println("Database connection failed");
+				System.out.println(e.getMessage());
 			}
 		}
 		return conn;

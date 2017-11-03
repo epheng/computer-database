@@ -7,5 +7,7 @@
 	<servlet-mapping>
 		<servlet-name>Dashboard</servlet-name>
 		<url-pattern>/dashboard</url-pattern>
+		<url-pattern>/editComputer</url-pattern>
+		<url-pattern>/addComputer</url-pattern>
 	</servlet-mapping>
 </web-app>
