@@ -128,6 +128,25 @@ public class DashboardServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/dashboard");
 	}
 	
+	public void updateComputer(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		int computerId = Integer.parseInt(request.getParameter("id"));
+		String name = request.getParameter("computerName");
+		if(name.equals("")) {
+			request.setAttribute("emptyName", "Name can't be empty");
+			editComputer(request, response);
+			return;
+		}
+		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+		Timestamp introducedDate = introduced == null ? null : introduced;
+		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
+		String company = request.getParameter("companyId");
+		int companyId = service.getCompanyIdbyName(company);
+		service.updateComputer(computerId, name, introducedDate, discontinuedDate, companyId);
+		response.sendRedirect(request.getContextPath() + "/dashboard");
+	}
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException {
 		
@@ -150,7 +169,7 @@ public class DashboardServlet extends HttpServlet {
 		
 		switch(getUri(request)) {
 		case "editComputer":
-//			editComputer(request, response);
+			updateComputer(request, response);
 			break;
 		case "addComputer":
 			createComputer(request, response);

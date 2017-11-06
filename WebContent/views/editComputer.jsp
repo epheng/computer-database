@@ -12,7 +12,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard"> Application - Computer Database </a>
+            <a class="navbar-brand" href="dashboard?page=1"> Application - Computer Database </a>
         </div>
     </header>
     <section id="main">
@@ -25,19 +25,20 @@
                     <h1>Edit Computer</h1>
 
                     <form action="editComputer" method="POST">
-                        <input type="hidden" value="${computer.id}" id="id"/> <!-- TODO: Change this value with the computer id -->
+                        <input type="hidden" value="${computer.id}" id="id" name="id"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="${computer.name}">
+                                <input type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}">
+                                <p>${emptyName}</p>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="${computer.introduced}">
+                                <input type="date" class="form-control" id="introduced" name="introduced" value="${computer.introduced}">
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="${computer.discontinued}">
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" value="${computer.discontinued}">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
@@ -54,7 +55,7 @@
 	                                    </c:choose>
                                     </c:forEach>
                                 </select>
-                            </div>            
+                            </div>
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">

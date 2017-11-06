@@ -84,4 +84,8 @@ public class DatabaseService {
 		return computerDao.countComputers();
 	}
 	
+	public void updateComputer(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
+		computerDao.updateComputerById(id, name, introduced, discontinued, companyId);
+	}
+	
 }
