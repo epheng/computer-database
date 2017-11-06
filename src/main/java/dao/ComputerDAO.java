@@ -21,7 +21,9 @@ public class ComputerDAO {
 
 	private String listQuery = "SELECT * FROM computer";
 	private String findQuery = "SELECT * FROM computer WHERE id = ?";
+	private String findSomeQuery = "SELECT * FROM computer WHERE id BETWEEN ? and ?";
 	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
+	private String countQuery = "SELECT COUNT(*) AS count FROM computer";
 	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String updateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 
@@ -49,6 +51,23 @@ public class ComputerDAO {
 		}
 		return computerList;
 	}
+	
+	public List<Computer> findComputers(int firstId, int nbComputerPerPage) {
+		List<Computer> computerList = null;
+		try(PreparedStatement prepStmt = conn.prepareStatement(findSomeQuery)) {
+			prepStmt.setInt(1, firstId);
+			prepStmt.setInt(2, firstId + nbComputerPerPage - 1);
+			ResultSet rs = prepStmt.executeQuery();
+			computerList = new ArrayList<Computer>();
+			while(rs.next()) {
+				computerList.add(mapper.toEntity(rs));
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return computerList;
+	}
 
 	public Computer findComputerById(int id) {
 		Computer computer = null;
@@ -64,6 +83,19 @@ public class ComputerDAO {
 			e.printStackTrace();
 		}
 		return computer;
+	}
+	
+	public int countComputers() {
+		int count = 0;
+		try(PreparedStatement prepStmt = conn.prepareStatement(countQuery)) {
+			ResultSet rs = prepStmt.executeQuery();
+			while(rs.next())
+				count = rs.getInt("count");
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
 	}
 
 	public void deleteComputerById(int id) {

@@ -30,6 +30,8 @@ public class DashboardServlet extends HttpServlet {
 	List<ComputerDTO> computerDtoList = null;
 	List<CompanyDTO> companyDtoList = null;
 	List<Company> companyList = null;
+	int nbComputerPerPage = 10;
+	int nbPage = 1;
 	
 	public void initComputerDtoList(List<Computer> computerList) {
 		computerDtoList = new ArrayList<ComputerDTO>();
@@ -53,11 +55,18 @@ public class DashboardServlet extends HttpServlet {
 	
 	public void dashboard(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		List<Computer> computerList = ComputerDAO.getInstance().listAllComputers();
+//		List<Computer> computerList = ComputerDAO.getInstance().listAllComputers();
+		nbPage = request.getParameter("page") == null ? nbPage : Integer.parseInt(request.getParameter("page"));
+		nbComputerPerPage = request.getParameter("length") == null ? nbComputerPerPage : Integer.parseInt(request.getParameter("length"));
+		List<Computer> computerList = service.findComputers(nbPage, nbComputerPerPage);
 		initComputerDtoList(computerList);
+		int totalNbComputers = service.countComputers();
 		
 		request.setAttribute("computerDtoList", computerDtoList);
-		request.setAttribute("nbComputer", computerDtoList.size());
+		request.setAttribute("nbComputer", totalNbComputers);
+		request.setAttribute("currentNbPage", nbPage);
+		request.setAttribute("currentNbComputerPerPage", nbComputerPerPage);
+		request.setAttribute("nbPagination", totalNbComputers % nbComputerPerPage == 0 ? totalNbComputers / nbComputerPerPage : totalNbComputers / nbComputerPerPage + 1);
 		
 		RequestDispatcher view = request.getRequestDispatcher("views/dashboard.jsp");
 		view.forward(request, response);
@@ -141,7 +150,7 @@ public class DashboardServlet extends HttpServlet {
 		
 		switch(getUri(request)) {
 		case "editComputer":
-			editComputer(request, response);
+//			editComputer(request, response);
 			break;
 		case "addComputer":
 			createComputer(request, response);

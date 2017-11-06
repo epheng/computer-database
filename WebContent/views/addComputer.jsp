@@ -50,7 +50,7 @@
 	                                    </c:choose>
                                     </c:forEach>
                                 </select>
-                            </div>                  
+                            </div>
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">

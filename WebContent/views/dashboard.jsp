@@ -96,24 +96,36 @@
 
     <footer class="navbar-fixed-bottom">
     	<div class="btn-group btn-group-sm pull-right" role="group" >
-	        <button type="button" class="btn btn-default">10</button>
-	        <button type="button" class="btn btn-default">50</button>
-            <button type="button" class="btn btn-default">100</button>
+	        <a href="dashboard?page=1&length=10"><button type="button" class="btn btn-default">10</button></a>
+	        <a href="dashboard?page=1&length=50"><button type="button" class="btn btn-default">50</button></a>
+            <a href="dashboard?page=1&length=100"><button type="button" class="btn btn-default">100</button></a>
         </div>
         <div class="container text-center">
             <ul class="pagination">
                 <li>
-                    <a href="#" aria-label="Previous">
+                    <a href="dashboard?page=${currentNbPage - 1}" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
 	                  </a>
 	              </li>
-	              <li><a href="#">1</a></li>
-	              <li><a href="#">2</a></li>
-	              <li><a href="#">3</a></li>
-	              <li><a href="#">4</a></li>
-	              <li><a href="#">5</a></li>
+	               <c:choose>
+	               	<c:when test="${currentNbPage < 4}">
+	               		<c:forEach var="i" begin="1" end="5">
+			              	<li><a href="dashboard?page=${i}">${i}</a></li>
+			              </c:forEach>
+	               	</c:when>
+	               	<c:when test="${currentNbPage < (nbPagination - 2)}">
+	               		<c:forEach var="i" begin="${currentNbPage - 2}" end="${currentNbPage + 2}">
+			              	<li><a href="dashboard?page=${i}">${i}</a></li>
+			              </c:forEach>
+	               	</c:when>
+	               	<c:otherwise>
+	               		<c:forEach var="i" begin="${nbPagination - 4}" end="${nbPagination}">
+			              	<li><a href="dashboard?page=${i}">${i}</a></li>
+			              </c:forEach>
+	               	</c:otherwise>
+	               </c:choose>
 	              <li>
-	                <a href="#" aria-label="Next">
+	                <a href="dashboard?page=${currentNbPage + 1}" aria-label="Next">
 	                    <span aria-hidden="true">&raquo;</span>
 	                </a>
 	            </li>

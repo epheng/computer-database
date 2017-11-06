@@ -75,4 +75,13 @@ public class DatabaseService {
 		return companyDao.getCompanyIdByName(name);
 	}
 	
+	public List<Computer> findComputers(int pageNumber, int nbComputerPerPage) {
+		int firstId = (pageNumber-1) * nbComputerPerPage + 1;
+		return computerDao.findComputers(firstId, nbComputerPerPage);
+	}
+	
+	public int countComputers() {
+		return computerDao.countComputers();
+	}
+	
 }
