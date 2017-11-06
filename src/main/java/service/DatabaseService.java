@@ -2,6 +2,7 @@ package service;
 
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import dao.CompanyDAO;
@@ -15,11 +16,11 @@ public class DatabaseService {
 	public CompanyDAO companyDao = CompanyDAO.getInstance();
 	private RequestData rd;
 	
+	public DatabaseService() {}
+	
 	public DatabaseService(RequestData rd) {
 		this.rd = rd;
 	}
-	
-	
 	
 	/**
 	 * FOR COMMAND LINE
@@ -64,6 +65,14 @@ public class DatabaseService {
 			System.out.println("computer updated.");
 			break;
 		}
+	}
+	
+	public void addComputer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
+		computerDao.createComputer(name, introduced, discontinued, companyId);
+	}
+	
+	public int getCompanyIdbyName(String name) {
+		return companyDao.getCompanyIdByName(name);
 	}
 	
 }

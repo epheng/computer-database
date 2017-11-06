@@ -1,7 +1,11 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,12 +21,15 @@ import dto.ComputerDTO;
 import mapper.ComputerMapper;
 import model.Company;
 import model.Computer;
+import service.DatabaseService;
 
 public class DashboardServlet extends HttpServlet {
 	
 	ComputerMapper mapper = ComputerMapper.getInstance();
+	DatabaseService service = new DatabaseService();
 	List<ComputerDTO> computerDtoList = null;
 	List<CompanyDTO> companyDtoList = null;
+	List<Company> companyList = null;
 	
 	public void initComputerDtoList(List<Computer> computerList) {
 		computerDtoList = new ArrayList<ComputerDTO>();
@@ -61,7 +68,7 @@ public class DashboardServlet extends HttpServlet {
 		int id = Integer.parseInt(request.getParameter("id"));
 		Computer computer = ComputerDAO.getInstance().findComputerById(id);
 		ComputerDTO computerDto = mapper.toComputerDTO(computer);
-		List<Company> companyList = CompanyDAO.getInstance().listAllCompanies();
+		companyList = CompanyDAO.getInstance().listAllCompanies();
 		initCompanyDtoList(companyList);
 		
 		request.setAttribute("computer", computerDto);
@@ -73,8 +80,43 @@ public class DashboardServlet extends HttpServlet {
 	
 	public void addComputer(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		companyList = CompanyDAO.getInstance().listAllCompanies();
+		initCompanyDtoList(companyList);
+		
+		request.setAttribute("companies", companyList);
 		RequestDispatcher view = request.getRequestDispatcher("views/addComputer.jsp");
 		view.forward(request, response);
+	}
+	
+	public Timestamp parseTimestamp(String s) {
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date parsedDate = dateFormat.parse(s);
+			Timestamp timestamp = new Timestamp(parsedDate.getTime());
+			return timestamp;
+		}
+		catch(ParseException e) {
+			return null;
+		}
+	}
+	
+	public void createComputer(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		String name = request.getParameter("computerName");
+		if(name.equals("")) {
+			request.setAttribute("emptyName", "Name can't be empty");
+			request.setAttribute("companies", companyList);
+			request.getRequestDispatcher("views/addComputer.jsp").forward(request, response);
+			return;
+		}
+		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+		Timestamp introducedDate = introduced == null ? null : introduced;
+		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
+		String company = request.getParameter("companyId");
+		int companyId = service.getCompanyIdbyName(company);
+		service.addComputer(name, introducedDate, discontinuedDate, companyId);
+		response.sendRedirect(request.getContextPath() + "/dashboard");
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -91,18 +133,20 @@ public class DashboardServlet extends HttpServlet {
 			addComputer(request, response);
 			break;
 		}
-			
+		
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String name = request.getParameter("computerName");
-		String introduced = request.getParameter("introduced");
-		String discontinued = request.getParameter("discontinued");
-		String company = request.getParameter("companyId");
-		System.out.println(name);
-		System.out.println(introduced);
-		System.out.println(discontinued);
-		System.out.println(company);		
+		
+		switch(getUri(request)) {
+		case "editComputer":
+			editComputer(request, response);
+			break;
+		case "addComputer":
+			createComputer(request, response);
+			break;
+		}
+		
 	}
 }

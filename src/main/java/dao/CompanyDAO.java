@@ -20,6 +20,7 @@ public class CompanyDAO {
 
 	private String listQuery = "SELECT * FROM company";
 	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
+	private String getIdByNameQuery = "SELECT id FROM company WHERE name = ?";
 
 	private CompanyDAO() {}
 
@@ -58,6 +59,20 @@ public class CompanyDAO {
 			e.printStackTrace();
 		}
 		return company;
+	}
+	
+	public int getCompanyIdByName(String name) {
+		int id = 0;
+		try(PreparedStatement prepStmt = conn.prepareStatement(getIdByNameQuery)) {
+			prepStmt.setString(1, name);
+			ResultSet rs = prepStmt.executeQuery();
+			while(rs.next())
+				id = rs.getInt("id");
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 
 }
