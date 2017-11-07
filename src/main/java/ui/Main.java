@@ -1,13 +1,10 @@
 package ui;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import service.DatabaseConnection;
-import service.DatabaseService;
-import service.RequestData;
-import service.RequestType;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class Main {
 	
@@ -133,7 +130,10 @@ public class Main {
 			conn.close();
 		}
 	*/
-		System.out.println(Integer.parseInt(""));
+		WebDriver driver = new FirefoxDriver();
+		driver.get("http://localhost:8080/computer-database/dashboard");
+		System.out.println("driver get successful");
+		driver.quit();
 	}
 
 }

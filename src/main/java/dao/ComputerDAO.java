@@ -22,7 +22,7 @@ public class ComputerDAO {
 	private String listQuery = "SELECT * FROM computer";
 	private String findQuery = "SELECT * FROM computer WHERE id = ?";
 //	private String findSomeQuery = "SELECT * FROM computer WHERE id BETWEEN ? and ?";
-	private String findSomeQuery = "SELECT * FROM computer LIMIT ?, ?";
+	private String findSomeQuery = "SELECT * FROM computer LIMIT ? OFFSET ?";
 	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
 	private String countQuery = "SELECT COUNT(*) AS count FROM computer";
 	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
@@ -56,8 +56,8 @@ public class ComputerDAO {
 	public List<Computer> findComputers(int firstId, int nbComputerPerPage) {
 		List<Computer> computerList = null;
 		try(PreparedStatement prepStmt = conn.prepareStatement(findSomeQuery)) {
-			prepStmt.setInt(1, firstId - 1);
-			prepStmt.setInt(2, firstId + nbComputerPerPage - 1);
+			prepStmt.setInt(2, firstId - 1);
+			prepStmt.setInt(1, nbComputerPerPage);
 			ResultSet rs = prepStmt.executeQuery();
 			computerList = new ArrayList<Computer>();
 			while(rs.next()) {

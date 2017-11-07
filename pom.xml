@@ -4,6 +4,54 @@
   <artifactId>computer-database</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+  <properties>
+  	<slf4j-version>1.7.25</slf4j-version>
+  	<mysql-connector-version>6.0.6</mysql-connector-version>
+  	<junit-version>4.12</junit-version>
+  	<mockito-version>1.10.19</mockito-version>
+  	<java-servlet-version>2.5</java-servlet-version>
+  	<jstl-version>1.2</jstl-version>
+  	<selenium-version>3.7.0</selenium-version>
+  </properties>
+  <dependencies>
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>${slf4j-version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>mysql</groupId>
+	    <artifactId>mysql-connector-java</artifactId>
+	    <version>${mysql-connector-version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>${junit-version}</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>org.mockito</groupId>
+	    <artifactId>mockito-all</artifactId>
+	    <version>${mockito-version}</version>
+	    <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>servlet-api</artifactId>
+	    <version>${java-servlet-version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>jstl</artifactId>
+	    <version>${jstl-version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.seleniumhq.selenium</groupId>
+	    <artifactId>selenium-java</artifactId>
+	    <version>${selenium-version}</version>
+	</dependency>
+  </dependencies>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
@@ -24,41 +72,6 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>1.7.25</version>
-	</dependency>
-	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>6.0.6</version>
-	</dependency>
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.12</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-	    <groupId>org.mockito</groupId>
-	    <artifactId>mockito-all</artifactId>
-	    <version>1.10.19</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>servlet-api</artifactId>
-	    <version>2.5</version>
-	    <!-- <scope>provided</scope>  -->
-	</dependency>
-	<dependency>
-	    <groupId>javax.servlet</groupId>
-	    <artifactId>jstl</artifactId>
-	    <version>1.2</version>
-	</dependency>
-  </dependencies>
   <reporting>
       <plugins>
         <plugin>
