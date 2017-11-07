@@ -88,4 +88,8 @@ public class DatabaseService {
 		computerDao.updateComputerById(id, name, introduced, discontinued, companyId);
 	}
 	
+	public void deleteComputerById(int id) {
+		computerDao.deleteComputerById(id);
+	}
+	
 }

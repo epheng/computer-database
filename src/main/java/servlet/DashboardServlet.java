@@ -147,6 +147,15 @@ public class DashboardServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/dashboard");
 	}
 	
+	public void deleteComputers(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String computerIds = request.getParameter("selection");
+		String[] parts = computerIds.split(",");
+		for(String id : parts)
+			service.deleteComputerById(Integer.parseInt(id));
+		response.sendRedirect(request.getContextPath() + "/dashboard");
+	}
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException {
 		
@@ -168,6 +177,9 @@ public class DashboardServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		switch(getUri(request)) {
+		case "dashboard":
+			deleteComputers(request, response);
+			break;
 		case "editComputer":
 			updateComputer(request, response);
 			break;
