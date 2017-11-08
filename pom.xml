@@ -12,8 +12,14 @@
   	<java-servlet-version>2.5</java-servlet-version>
   	<jstl-version>1.2</jstl-version>
   	<selenium-version>3.7.0</selenium-version>
+  	<hikaricp-version>2.7.1</hikaricp-version>
   </properties>
   <dependencies>
+	<dependency>
+	    <groupId>com.zaxxer</groupId>
+	    <artifactId>HikariCP</artifactId>
+	    <version>${hikaricp-version}</version>
+	</dependency>
 	<dependency>
 	    <groupId>org.slf4j</groupId>
 	    <artifactId>slf4j-api</artifactId>

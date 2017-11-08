@@ -21,8 +21,8 @@ public class ComputerDAO {
 
 	private String listQuery = "SELECT * FROM computer";
 	private String findQuery = "SELECT * FROM computer WHERE id = ?";
-//	private String findSomeQuery = "SELECT * FROM computer WHERE id BETWEEN ? and ?";
 	private String findSomeQuery = "SELECT * FROM computer LIMIT ? OFFSET ?";
+	private String findByNameOrCompanyQuery = "SELECT * FROM computer JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
 	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
 	private String countQuery = "SELECT COUNT(*) AS count FROM computer";
 	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
@@ -84,6 +84,23 @@ public class ComputerDAO {
 			e.printStackTrace();
 		}
 		return computer;
+	}
+	
+	public List<Computer> findComputersByNameOrCompany(String match) {
+		List<Computer> computerList = null;
+		try(PreparedStatement prepStmt = conn.prepareStatement(findByNameOrCompanyQuery)) {
+			prepStmt.setString(1, "%" + match + "%");
+			prepStmt.setString(2, "%" + match + "%");
+			ResultSet rs = prepStmt.executeQuery();
+			computerList = new ArrayList<Computer>();
+			while(rs.next()) {
+				computerList.add(mapper.toEntity(rs));
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return computerList;
 	}
 	
 	public int countComputers() {

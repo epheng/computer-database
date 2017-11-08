@@ -104,4 +104,9 @@ public class DatabaseService {
 		return companyDao.listAllCompanies();
 	}
 	
+	public List<Computer> searchComputersByNameOrCompany(HttpServletRequest request) {
+		String match = request.getParameter("search");
+		return computerDao.findComputersByNameOrCompany(match);
+	}
+	
 }

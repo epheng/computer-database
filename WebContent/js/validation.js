@@ -7,7 +7,7 @@ $(document).ready(function() {
 			},
 			"Please enter a valid date"
 	);
-	$("#addForm").validate({
+	$("#form").validate({
 		rules: {
 			computerName: {
 				required: true,

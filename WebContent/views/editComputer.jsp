@@ -8,6 +8,9 @@
 <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="./css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="./css/main.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
+<script src="./js/validation.js"></script>
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -24,7 +27,7 @@
                     </div>
                     <h1>Edit Computer</h1>
 
-                    <form action="editComputer" method="POST">
+                    <form action="editComputer" method="POST" id="form">
                         <input type="hidden" value="${computer.id}" id="id" name="id"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">

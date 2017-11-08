@@ -50,10 +50,14 @@ public class DashboardServlet extends HttpServlet {
 		return parts[2];
 	}
 	
-	public void dashboard(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void setPagination(HttpServletRequest request) {
 		nbPage = request.getParameter("page") == null ? nbPage : Integer.parseInt(request.getParameter("page"));
 		nbComputerPerPage = request.getParameter("length") == null ? nbComputerPerPage : Integer.parseInt(request.getParameter("length"));
+	}
+	
+	public void dashboard(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		setPagination(request);
 		List<Computer> computerList = service.findComputers(nbPage, nbComputerPerPage);
 		List<ComputerDTO> computerDtoList = initComputerDtoList(computerList);
 		int totalNbComputers = service.countComputers();
@@ -110,6 +114,22 @@ public class DashboardServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/dashboard");
 	}
 	
+	public void searchComputers(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		setPagination(request);
+		List<Computer> computerList = service.searchComputersByNameOrCompany(request);
+		List<ComputerDTO> computerDtoList = initComputerDtoList(computerList);
+		int totalNbComputers = service.countComputers();
+		
+		request.setAttribute("computerDtoList", computerDtoList);
+		request.setAttribute("nbComputer", totalNbComputers);
+		request.setAttribute("currentNbPage", nbPage);
+		request.setAttribute("nbPagination", totalNbComputers % nbComputerPerPage == 0 ? totalNbComputers / nbComputerPerPage : totalNbComputers / nbComputerPerPage + 1);
+		
+		RequestDispatcher view = request.getRequestDispatcher("views/dashboard.jsp");
+		view.forward(request, response);
+	}
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException {
 		
@@ -132,7 +152,11 @@ public class DashboardServlet extends HttpServlet {
 		
 		switch(getUri(request)) {
 		case "dashboard":
-			deleteComputers(request, response);
+			if(request.getParameter("action").equals("search")) {
+				searchComputers(request, response);
+			} else {
+				deleteComputers(request, response);
+			}
 			break;
 		case "editComputer":
 			updateComputer(request, response);

@@ -1,15 +1,15 @@
 package service;
 
-
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseConnection {
 	
-	private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
-	private static final String USER = "admincdb";
-	private static final String PWD = "qwerty123";
+	private static HikariConfig config = new HikariConfig("/datasource.properties");
+	private static HikariDataSource dataSource = new HikariDataSource(config);
 	
 	private static Connection conn;
 	
@@ -21,11 +21,7 @@ public class DatabaseConnection {
 	public static Connection getInstance() {
 		if(conn == null) {
 			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
- 				conn = DriverManager.getConnection(URL, USER, PWD);
-			}
-			catch(ClassNotFoundException e) {
-				System.out.println(e.getMessage());
+ 				conn = dataSource.getConnection();
 			}
 			catch(SQLException e) {
 				System.out.println(e.getMessage());
