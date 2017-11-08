@@ -8,6 +8,9 @@
 <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="./css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="./css/main.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.js"></script>
+<script src="./js/validation.js"></script>
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -21,12 +24,11 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action="addComputer" method="POST" name="addForm">
+                    <form action="addComputer" method="POST" id="addForm">
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer name  (not empty)</label>
+                                <label for="computerName">Computer name  (at least 3 characters)</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
-                                <p>${emptyName}</p>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date  (Format : dd/MM/yyyy)</label>

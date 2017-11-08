@@ -56,8 +56,8 @@ public class ComputerDAO {
 	public List<Computer> findComputers(int firstId, int nbComputerPerPage) {
 		List<Computer> computerList = null;
 		try(PreparedStatement prepStmt = conn.prepareStatement(findSomeQuery)) {
-			prepStmt.setInt(2, firstId - 1);
 			prepStmt.setInt(1, nbComputerPerPage);
+			prepStmt.setInt(2, firstId - 1);
 			ResultSet rs = prepStmt.executeQuery();
 			computerList = new ArrayList<Computer>();
 			while(rs.next()) {

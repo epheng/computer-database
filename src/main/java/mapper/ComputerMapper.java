@@ -52,10 +52,4 @@ public class ComputerMapper {
 		return new ComputerDTO(id, name, introduced, discontinued, company);
 	}
 	
-	public CompanyDTO toCompanyDTO(Company company) {
-		String id = "" + company.getId();
-		String name = company.getName();
-		return new CompanyDTO(id, name);
-	}
-	
 }

@@ -1,9 +1,13 @@
 package service;
 
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import dao.CompanyDAO;
 import dao.ComputerDAO;
@@ -14,65 +18,45 @@ public class DatabaseService {
 	
 	public ComputerDAO computerDao = ComputerDAO.getInstance();
 	public CompanyDAO companyDao = CompanyDAO.getInstance();
-	private RequestData rd;
 	
-	public DatabaseService() {}
-	
-	public DatabaseService(RequestData rd) {
-		this.rd = rd;
-	}
-	
-	/**
-	 * FOR COMMAND LINE
-	 * Method that creates a statement and
-	 * calls the appropriate execution method depending on the request type
-	 * @throws SQLException
-	 */
-	public void executeRequest() {
-		switch(rd.getRequestType()) {
-		case LIST_COMPUTERS:
-			List<Computer> computerList = computerDao.listAllComputers();
-			for(Computer comp : computerList)
-				System.out.println(comp.getName());
-			break;
-		case LIST_COMPANIES:
-			companyDao.listAllCompanies();
-			List<Company> companyList = companyDao.listAllCompanies();
-			for(Company comp : companyList)
-				System.out.println(comp.getName());
-			break;
-		case SHOW_COMPUTER:
-			Computer computer = computerDao.findComputerById(rd.getComputerId());
-			System.out.println(computer);
-			break;
-		case CREATE:
-			computerDao.createComputer(rd.getComputer_name(),
-					rd.getIntroducedDate(),
-					rd.getDiscontinuedDate(),
-					rd.getCompany_id());
-			System.out.println("computer created.");
-			break;
-		case DELETE:
-			computerDao.deleteComputerById(rd.getComputerId());
-			System.out.println("computer deleted.");
-			break;
-		case UPDATE:
-			computerDao.updateComputerById(rd.getComputerId(),
-					rd.getComputer_name(),
-					rd.getIntroducedDate(),
-					rd.getDiscontinuedDate(),
-					rd.getCompany_id());
-			System.out.println("computer updated.");
-			break;
+	public Timestamp parseTimestamp(String s) {
+		try {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date parsedDate = dateFormat.parse(s);
+			Timestamp timestamp = new Timestamp(parsedDate.getTime());
+			return timestamp;
+		}
+		catch(ParseException e) {
+			return null;
 		}
 	}
 	
-	public void addComputer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		computerDao.createComputer(name, introduced, discontinued, companyId);
+	public void addComputer(HttpServletRequest request) {
+		String name = request.getParameter("computerName");
+		// should be validated
+		/*
+		if(name.equals("")) {
+			request.setAttribute("emptyName", "Name can't be empty");
+			request.setAttribute("companies", companyList);
+			request.getRequestDispatcher("views/addComputer.jsp").forward(request, response);
+			return;
+		}
+		*/
+		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+		Timestamp introducedDate = introduced == null ? null : introduced;
+		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
+		String company = request.getParameter("companyId");
+		int companyId = getCompanyIdbyName(company);
+		computerDao.createComputer(name, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public int getCompanyIdbyName(String name) {
 		return companyDao.getCompanyIdByName(name);
+	}
+	
+	public Computer findComputerById(int id) {
+		return computerDao.findComputerById(id);
 	}
 	
 	public List<Computer> findComputers(int pageNumber, int nbComputerPerPage) {
@@ -84,12 +68,40 @@ public class DatabaseService {
 		return computerDao.countComputers();
 	}
 	
-	public void updateComputer(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		computerDao.updateComputerById(id, name, introduced, discontinued, companyId);
+	public void updateComputer(HttpServletRequest request) {
+		int computerId = Integer.parseInt(request.getParameter("id"));
+		String name = request.getParameter("computerName");
+		// should be validated
+		/*
+		if(name.equals("")) {
+			request.setAttribute("emptyName", "Name can't be empty");
+			editComputer(request, response);
+			return;
+		}
+		*/
+		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+		Timestamp introducedDate = introduced == null ? null : introduced;
+		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
+		String company = request.getParameter("companyId");
+		int companyId = getCompanyIdbyName(company);
+		computerDao.updateComputerById(computerId, name, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public void deleteComputerById(int id) {
 		computerDao.deleteComputerById(id);
+	}
+	
+	public void deleteComputers(HttpServletRequest request) {
+		String computerIds = request.getParameter("selection");
+		String[] ids = computerIds.split(",");
+		for(String id : ids) {
+			deleteComputerById(Integer.parseInt(id));
+		}
+	}
+	
+	public List<Company> findAllCompanies() {
+		return companyDao.listAllCompanies();
 	}
 	
 }

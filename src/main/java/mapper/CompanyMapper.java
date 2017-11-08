@@ -4,6 +4,7 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import dto.CompanyDTO;
 import model.Company;
 
 public class CompanyMapper {
@@ -30,4 +31,11 @@ public class CompanyMapper {
 		}
 		return company;
 	}
+	
+	public CompanyDTO toCompanyDTO(Company company) {
+		String id = "" + company.getId();
+		String name = company.getName();
+		return new CompanyDTO(id, name);
+	}
+	
 }
