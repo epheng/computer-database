@@ -76,13 +76,20 @@ public class CompanyDAO {
 		return id;
 	}
 	
-	public void deleteCompanyById(int id) {
-		try(PreparedStatement prepStmt = conn.prepareStatement(deleteQuery)) {
+	public void deleteCompanyById(int id, Connection conn) throws SQLException {
+		PreparedStatement prepStmt = null;
+		try {
+			prepStmt = conn.prepareStatement(deleteQuery);
 			prepStmt.setInt(1, id);
 			prepStmt.executeUpdate();
 		}
 		catch(SQLException e) {
-			e.printStackTrace();			
+			e.printStackTrace();
+			conn.rollback();
+		}
+		finally {
+			conn.setAutoCommit(true);
+			prepStmt.close();
 		}
 	}
 

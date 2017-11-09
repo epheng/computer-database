@@ -127,13 +127,20 @@ public class ComputerDAO {
 		}
 	}
 	
-	public void deleteComputersByCompanyId(int id) {
-		try(PreparedStatement prepStmt = conn.prepareStatement(deleteByCompanyQuery)) {
+	public void deleteComputersByCompanyId(int id, Connection conn) throws SQLException {
+		PreparedStatement prepStmt = null;
+		try {
+			conn.setAutoCommit(false);
+			prepStmt = conn.prepareStatement(deleteByCompanyQuery);
 			prepStmt.setInt(1, id);
 			prepStmt.executeUpdate();
 		}
 		catch(SQLException e) {
-			e.printStackTrace();			
+			e.printStackTrace();
+			conn.rollback();
+		}
+		finally {
+			prepStmt.close();
 		}
 	}
 
