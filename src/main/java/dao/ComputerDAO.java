@@ -24,6 +24,7 @@ public class ComputerDAO {
 	private String findSomeQuery = "SELECT * FROM computer LIMIT ? OFFSET ?";
 	private String findByNameOrCompanyQuery = "SELECT * FROM computer JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
 	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
+	private String deleteByCompanyQuery = "DELETE FROM computer WHERE company_id = ?";
 	private String countQuery = "SELECT COUNT(*) AS count FROM computer";
 	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private String updateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -122,7 +123,16 @@ public class ComputerDAO {
 			prepStmt.executeUpdate();
 		}
 		catch(SQLException e) {
-			// TODO
+			e.printStackTrace();			
+		}
+	}
+	
+	public void deleteComputersByCompanyId(int id) {
+		try(PreparedStatement prepStmt = conn.prepareStatement(deleteByCompanyQuery)) {
+			prepStmt.setInt(1, id);
+			prepStmt.executeUpdate();
+		}
+		catch(SQLException e) {
 			e.printStackTrace();			
 		}
 	}

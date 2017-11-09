@@ -41,9 +41,30 @@
         <form id="deleteForm" action="#" method="POST">
             <input type="hidden" name="selection" value="">
         </form>
+        
+        <form id="deleteCompanyForm" action="dashboard?action=deleteCompany" method="POST">
+            <input type="hidden" name="selectionCompany" value="">
+        </form>
 
         <div class="container" style="margin-top: 10px;">
-            <table class="table table-striped table-bordered">
+			<div class="editMode">
+				<select id="companyId" name="companyId">
+					<c:forEach items="${companies}" var="company">
+						<c:choose>
+							<c:when test="${company.name == computer.company}">
+								<option value="${company.id}" selected>${company.name}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${company.id}">${company.name}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
+				<a href="#" id="deleteCompanyForm" onclick="$.fn.deleteSelectedCompany();">
+					<i style="color:green" class="fa fa-trash-o fa-lg"></i>
+				</a>
+			</div>
+			<table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <!-- Variable declarations for passing labels as parameters -->

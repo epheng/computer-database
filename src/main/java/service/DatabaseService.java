@@ -33,15 +33,6 @@ public class DatabaseService {
 	
 	public void addComputer(HttpServletRequest request) {
 		String name = request.getParameter("computerName");
-		// should be validated
-		/*
-		if(name.equals("")) {
-			request.setAttribute("emptyName", "Name can't be empty");
-			request.setAttribute("companies", companyList);
-			request.getRequestDispatcher("views/addComputer.jsp").forward(request, response);
-			return;
-		}
-		*/
 		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
 		Timestamp introducedDate = introduced == null ? null : introduced;
 		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
@@ -71,14 +62,6 @@ public class DatabaseService {
 	public void updateComputer(HttpServletRequest request) {
 		int computerId = Integer.parseInt(request.getParameter("id"));
 		String name = request.getParameter("computerName");
-		// should be validated
-		/*
-		if(name.equals("")) {
-			request.setAttribute("emptyName", "Name can't be empty");
-			editComputer(request, response);
-			return;
-		}
-		*/
 		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
 		Timestamp introducedDate = introduced == null ? null : introduced;
 		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
@@ -107,6 +90,12 @@ public class DatabaseService {
 	public List<Computer> searchComputersByNameOrCompany(HttpServletRequest request) {
 		String match = request.getParameter("search");
 		return computerDao.findComputersByNameOrCompany(match);
+	}
+	
+	public void deleteCompany(HttpServletRequest request) {
+		int companyId = Integer.parseInt(request.getParameter("selectionCompany"));
+		computerDao.deleteComputersByCompanyId(companyId);
+		companyDao.deleteCompanyById(companyId);
 	}
 	
 }

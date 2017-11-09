@@ -62,6 +62,11 @@ public class DashboardServlet extends HttpServlet {
 		List<ComputerDTO> computerDtoList = initComputerDtoList(computerList);
 		int totalNbComputers = service.countComputers();
 		
+		List<Company> companyList = service.findAllCompanies();
+		List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
+		
+		request.setAttribute("companies", companyDtoList);
+		
 		request.setAttribute("computerDtoList", computerDtoList);
 		request.setAttribute("nbComputer", totalNbComputers);
 		request.setAttribute("currentNbPage", nbPage);
@@ -130,6 +135,12 @@ public class DashboardServlet extends HttpServlet {
 		view.forward(request, response);
 	}
 	
+	public void deleteCompany(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		service.deleteCompany(request);
+		response.sendRedirect(request.getContextPath() + "/dashboard");
+	}
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 		      throws ServletException, IOException {
 		
@@ -152,8 +163,13 @@ public class DashboardServlet extends HttpServlet {
 		
 		switch(getUri(request)) {
 		case "dashboard":
-			if(request.getParameter("action").equals("search")) {
-				searchComputers(request, response);
+			if(request.getParameter("action") != null) {
+				if(request.getParameter("action").equals("search")) {
+					searchComputers(request, response);
+				}
+				else if(request.getParameter("action").equals("deleteCompany")) {
+					deleteCompany(request, response);
+				}
 			} else {
 				deleteComputers(request, response);
 			}

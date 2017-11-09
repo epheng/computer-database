@@ -41,6 +41,7 @@ $(function() {
 
 }( jQuery ));
 
+
 // Function toggleEditMode
 (function ( $ ) {
 
@@ -69,6 +70,16 @@ $(function() {
     };
 }( jQuery ));
 
+
+//Function delete selected company: Asks for confirmation to delete selected company, then submits it to the deleteForm
+(function ( $ ) {
+    $.fn.deleteSelectedCompany = function() {
+        if (confirm("Are you sure you want to delete the selected company?")) {
+        	$('#deleteCompanyForm input[name=selectionCompany]').attr("value", $('select[name=companyId]').val());
+            $('#deleteCompanyForm').submit();
+        }
+    };
+}( jQuery ));
 
 
 //Event handling

@@ -21,6 +21,7 @@ public class CompanyDAO {
 	private String listQuery = "SELECT * FROM company";
 	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
 	private String getIdByNameQuery = "SELECT id FROM company WHERE name = ?";
+	private String deleteQuery = "DELETE FROM company WHERE id = ?";
 
 	private CompanyDAO() {}
 
@@ -73,6 +74,16 @@ public class CompanyDAO {
 			e.printStackTrace();
 		}
 		return id;
+	}
+	
+	public void deleteCompanyById(int id) {
+		try(PreparedStatement prepStmt = conn.prepareStatement(deleteQuery)) {
+			prepStmt.setInt(1, id);
+			prepStmt.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();			
+		}
 	}
 
 }
