@@ -13,8 +13,14 @@
   	<jstl-version>1.2</jstl-version>
   	<selenium-version>3.7.0</selenium-version>
   	<hikaricp-version>2.7.1</hikaricp-version>
+  	<spring-webmvc-version>4.3.12.RELEASE</spring-webmvc-version>
   </properties>
   <dependencies>
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-webmvc</artifactId>
+	    <version>${spring-webmvc-version}</version>
+	</dependency>
 	<dependency>
 	    <groupId>com.zaxxer</groupId>
 	    <artifactId>HikariCP</artifactId>

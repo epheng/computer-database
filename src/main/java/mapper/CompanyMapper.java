@@ -4,12 +4,16 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import dto.CompanyDTO;
 import model.Company;
 
 public class CompanyMapper {
 	
 	private static CompanyMapper instance = null;
+	
 	
 	private CompanyMapper() {}
 	
@@ -21,7 +25,8 @@ public class CompanyMapper {
 	}
 	
 	public Company toEntity(ResultSet rs) {
-		Company company = new Company();
+//		Company company = new Company();
+		Company company = (Company) ComputerMapper.context.getBean("company");
 		try {
 			company.setId(rs.getInt("id"));
 			company.setName(rs.getString("name"));

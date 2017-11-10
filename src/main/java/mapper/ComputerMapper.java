@@ -4,15 +4,17 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import dao.CompanyDAO;
-import dto.CompanyDTO;
 import dto.ComputerDTO;
-import model.Company;
 import model.Computer;
 
 public class ComputerMapper {
 	
 	private static ComputerMapper instance = null;
+	public static ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
 	
 	private ComputerMapper() {}
 	
@@ -24,7 +26,7 @@ public class ComputerMapper {
 	}
 	
 	public Computer toEntity(ResultSet rs) {
-		Computer computer = new Computer();
+		Computer computer = (Computer) context.getBean("computer");
 		try {
 			computer.setId(rs.getInt("id"));
 			computer.setName(rs.getString("name"));
