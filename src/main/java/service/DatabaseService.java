@@ -11,15 +11,22 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import dao.CompanyDAO;
 import dao.ComputerDAO;
 import model.Company;
 import model.Computer;
 
+@Component
 public class DatabaseService {
 	
-	public ComputerDAO computerDao = ComputerDAO.getInstance();
-	public CompanyDAO companyDao = CompanyDAO.getInstance();
+	@Autowired
+	ComputerDAO computerDao;
+	
+	@Autowired
+	CompanyDAO companyDao;
 	
 	public Timestamp parseTimestamp(String s) {
 		try {

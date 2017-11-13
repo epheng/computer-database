@@ -7,30 +7,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import mapper.CompanyMapper;
 import model.Company;
 import service.DatabaseConnection;
 
+@Component
 public class CompanyDAO {
 
-	private static CompanyDAO instance = null;
-
 	public Connection conn = DatabaseConnection.getInstance();
-	public CompanyMapper mapper = CompanyMapper.getInstance();
+
+	@Autowired
+	CompanyMapper mapper;
 
 	private String listQuery = "SELECT * FROM company";
 	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
 	private String getIdByNameQuery = "SELECT id FROM company WHERE name = ?";
 	private String deleteQuery = "DELETE FROM company WHERE id = ?";
-
-	private CompanyDAO() {}
-
-	public static CompanyDAO getInstance() {
-		if(instance == null) {
-			instance = new CompanyDAO();
-		}
-		return instance;
-	}
 
 	public List<Company> listAllCompanies() {
 		List<Company> companyList = null;

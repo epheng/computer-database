@@ -4,29 +4,21 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import dao.CompanyDAO;
 import dto.ComputerDTO;
 import model.Computer;
 
+@Component
 public class ComputerMapper {
 	
-	private static ComputerMapper instance = null;
-	public static ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-	
-	private ComputerMapper() {}
-	
-	public static ComputerMapper getInstance() {
-		if(instance == null) {
-			instance = new ComputerMapper();
-		}
-		return instance;
-	}
+	@Autowired
+	CompanyDAO companyDao;
 	
 	public Computer toEntity(ResultSet rs) {
-		Computer computer = (Computer) context.getBean("computer");
+		Computer computer = new Computer();
 		try {
 			computer.setId(rs.getInt("id"));
 			computer.setName(rs.getString("name"));
@@ -50,7 +42,7 @@ public class ComputerMapper {
 		String name = computer.getName();
 		String introduced = computer.getIntroduced() == null ? "" : removeDateTime(computer.getIntroduced().toString());
 		String discontinued = computer.getDiscontinued() == null ? "" : removeDateTime(computer.getDiscontinued().toString());
-		String company = computer.getCompanyId() == 0 ? "" : CompanyDAO.getInstance().getCompanyById(computer.getCompanyId()).getName();
+		String company = computer.getCompanyId() == 0 ? "" : companyDao.getCompanyById(computer.getCompanyId()).getName();
 		return new ComputerDTO(id, name, introduced, discontinued, company);
 	}
 	

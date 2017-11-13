@@ -4,29 +4,16 @@ package mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 
 import dto.CompanyDTO;
 import model.Company;
 
+@Component
 public class CompanyMapper {
 	
-	private static CompanyMapper instance = null;
-	
-	
-	private CompanyMapper() {}
-	
-	public static CompanyMapper getInstance() {
-		if(instance == null) {
-			instance = new CompanyMapper();
-		}
-		return instance;
-	}
-	
 	public Company toEntity(ResultSet rs) {
-//		Company company = new Company();
-		Company company = (Company) ComputerMapper.context.getBean("company");
+		Company company = new Company();
 		try {
 			company.setId(rs.getInt("id"));
 			company.setName(rs.getString("name"));

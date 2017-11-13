@@ -8,16 +8,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import mapper.ComputerMapper;
 import model.Computer;
 import service.DatabaseConnection;
 
+@Component
 public class ComputerDAO {
 
 	private static ComputerDAO instance = null;
 
 	public Connection conn = DatabaseConnection.getInstance();
-	public ComputerMapper mapper = ComputerMapper.getInstance();
+
+	@Autowired
+	public ComputerMapper mapper;
 
 	private String listQuery = "SELECT * FROM computer";
 	private String findQuery = "SELECT * FROM computer WHERE id = ?";

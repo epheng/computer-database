@@ -10,6 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Controller;
+
+import config.ConfigCDB;
 import dto.CompanyDTO;
 import dto.ComputerDTO;
 import mapper.CompanyMapper;
@@ -18,13 +25,24 @@ import model.Company;
 import model.Computer;
 import service.DatabaseService;
 
+@Controller
 public class DashboardServlet extends HttpServlet {
 	
-	ComputerMapper mapper = ComputerMapper.getInstance();
-	CompanyMapper companyMapper = CompanyMapper.getInstance();
-	DatabaseService service = new DatabaseService();
+
+	@Autowired
+	ComputerMapper mapper;
+	@Autowired
+	CompanyMapper companyMapper;
+	@Autowired
+	DatabaseService service;
+	
 	int nbComputerPerPage = 10;
 	int nbPage = 1;
+	
+	public void init() {
+		ApplicationContext context = new AnnotationConfigApplicationContext(ConfigCDB.class);
+		context.getAutowireCapableBeanFactory().autowireBean(this);
+	}
 	
 	public List<ComputerDTO> initComputerDtoList(List<Computer> computerList) {
 		List<ComputerDTO> computerDtoList = null;
