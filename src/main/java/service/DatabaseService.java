@@ -16,11 +16,15 @@ import org.springframework.stereotype.Component;
 
 import dao.CompanyDAO;
 import dao.ComputerDAO;
+import dao.DatabaseConnection;
 import model.Company;
 import model.Computer;
 
 @Component
 public class DatabaseService {
+	
+	@Autowired
+	DatabaseConnection dbconn;
 	
 	@Autowired
 	ComputerDAO computerDao;
@@ -103,8 +107,8 @@ public class DatabaseService {
 	
 	public void deleteCompany(HttpServletRequest request) {
 		int companyId = Integer.parseInt(request.getParameter("selectionCompany"));
-		Connection deleteConn = DatabaseConnection.getInstance();
 		try {
+			Connection deleteConn = dbconn.getConnection();
 			computerDao.deleteComputersByCompanyId(companyId, deleteConn);
 			companyDao.deleteCompanyById(companyId, deleteConn);
 		}

@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 
 import mapper.CompanyMapper;
 import model.Company;
-import service.DatabaseConnection;
 
 @Component
 public class CompanyDAO {
 
-	public Connection conn = DatabaseConnection.getInstance();
+	@Autowired
+	private DatabaseConnection dbconn;
 
 	@Autowired
 	CompanyMapper mapper;
@@ -29,7 +29,8 @@ public class CompanyDAO {
 
 	public List<Company> listAllCompanies() {
 		List<Company> companyList = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
 			ResultSet rs = prepStmt.executeQuery();
 			companyList = new ArrayList<Company>();
 			while(rs.next()) {
@@ -45,7 +46,8 @@ public class CompanyDAO {
 	
 	public Company getCompanyById(int id) {
 		Company company = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(getByIdQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(getByIdQuery)) {
 			prepStmt.setInt(1, id);
 			ResultSet rs = prepStmt.executeQuery();
 			while(rs.next())
@@ -59,7 +61,8 @@ public class CompanyDAO {
 	
 	public int getCompanyIdByName(String name) {
 		int id = 0;
-		try(PreparedStatement prepStmt = conn.prepareStatement(getIdByNameQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(getIdByNameQuery)) {
 			prepStmt.setString(1, name);
 			ResultSet rs = prepStmt.executeQuery();
 			while(rs.next())

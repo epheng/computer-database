@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 
 import mapper.ComputerMapper;
 import model.Computer;
-import service.DatabaseConnection;
 
 @Component
 public class ComputerDAO {
 
 	private static ComputerDAO instance = null;
 
-	public Connection conn = DatabaseConnection.getInstance();
+	@Autowired
+	public DatabaseConnection dbconn;
 
 	@Autowired
 	public ComputerMapper mapper;
@@ -46,7 +46,8 @@ public class ComputerDAO {
 
 	public List<Computer> listAllComputers() {
 		List<Computer> computerList = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
 			ResultSet rs = prepStmt.executeQuery();
 			computerList = new ArrayList<Computer>();
 			while(rs.next()) {
@@ -62,7 +63,8 @@ public class ComputerDAO {
 	
 	public List<Computer> findComputers(int firstId, int nbComputerPerPage) {
 		List<Computer> computerList = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(findSomeQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(findSomeQuery)) {
 			prepStmt.setInt(1, nbComputerPerPage);
 			prepStmt.setInt(2, firstId - 1);
 			ResultSet rs = prepStmt.executeQuery();
@@ -79,7 +81,8 @@ public class ComputerDAO {
 
 	public Computer findComputerById(int id) {
 		Computer computer = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(findQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(findQuery)) {
 			prepStmt.setInt(1, id);
 			ResultSet rs = prepStmt.executeQuery();
 			while(rs.next()) {
@@ -95,7 +98,8 @@ public class ComputerDAO {
 	
 	public List<Computer> findComputersByNameOrCompany(String match) {
 		List<Computer> computerList = null;
-		try(PreparedStatement prepStmt = conn.prepareStatement(findByNameOrCompanyQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(findByNameOrCompanyQuery)) {
 			prepStmt.setString(1, "%" + match + "%");
 			prepStmt.setString(2, "%" + match + "%");
 			ResultSet rs = prepStmt.executeQuery();
@@ -112,7 +116,8 @@ public class ComputerDAO {
 	
 	public int countComputers() {
 		int count = 0;
-		try(PreparedStatement prepStmt = conn.prepareStatement(countQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(countQuery)) {
 			ResultSet rs = prepStmt.executeQuery();
 			while(rs.next())
 				count = rs.getInt("count");
@@ -124,7 +129,8 @@ public class ComputerDAO {
 	}
 
 	public void deleteComputerById(int id) {
-		try(PreparedStatement prepStmt = conn.prepareStatement(deleteQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(deleteQuery)) {
 			prepStmt.setInt(1, id);
 			prepStmt.executeUpdate();
 		}
@@ -151,7 +157,8 @@ public class ComputerDAO {
 	}
 
 	public void createComputer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		try(PreparedStatement prepStmt = conn.prepareStatement(createQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepStmt = conn.prepareStatement(createQuery)) {
 			prepStmt.setString(1, name);
 			prepStmt.setTimestamp(2, introduced);
 			prepStmt.setTimestamp(3, discontinued);
@@ -165,7 +172,8 @@ public class ComputerDAO {
 	}
 
 	public void updateComputerById(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		try(PreparedStatement prepUpdateStmt = conn.prepareStatement(updateQuery)) {
+		try(Connection conn = dbconn.getConnection();
+			PreparedStatement prepUpdateStmt = conn.prepareStatement(updateQuery)) {
 			Computer originalComputer = findComputerById(id);
 			String updatedName = name.isEmpty() ? originalComputer.getName() : name;
 			
