@@ -1,8 +1,6 @@
 package service;
 
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -107,14 +105,7 @@ public class DatabaseService {
 	
 	public void deleteCompany(HttpServletRequest request) {
 		int companyId = Integer.parseInt(request.getParameter("selectionCompany"));
-		try {
-			Connection deleteConn = dbconn.getConnection();
-			computerDao.deleteComputersByCompanyId(companyId, deleteConn);
-			companyDao.deleteCompanyById(companyId, deleteConn);
-		}
-		catch(SQLException e) {
-			System.out.println(e.getMessage());
-		}
+		companyDao.deleteCompanyById(companyId);
 	}
 	
 }

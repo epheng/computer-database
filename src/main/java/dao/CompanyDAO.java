@@ -1,14 +1,18 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import mapper.CompanyMapper;
 import model.Company;
@@ -17,77 +21,53 @@ import model.Company;
 public class CompanyDAO {
 
 	@Autowired
-	private DatabaseConnection dbconn;
+	CompanyMapper mapper;
+	
+	@Autowired
+	ComputerDAO computerDao;
+	
+	@Autowired
+	private PlatformTransactionManager transManager;
+	
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
-	CompanyMapper mapper;
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
 	private String listQuery = "SELECT * FROM company";
 	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
 	private String getIdByNameQuery = "SELECT id FROM company WHERE name = ?";
 	private String deleteQuery = "DELETE FROM company WHERE id = ?";
-
+	
+	private class CompanyRowMapper implements RowMapper<Company> {
+		public Company mapRow(ResultSet rs, int rowNb) throws SQLException {
+			return mapper.toEntity(rs);
+		}
+	}
+	
 	public List<Company> listAllCompanies() {
-		List<Company> companyList = null;
-		try(Connection conn = dbconn.getConnection();
-			PreparedStatement prepStmt = conn.prepareStatement(listQuery)) {
-			ResultSet rs = prepStmt.executeQuery();
-			companyList = new ArrayList<Company>();
-			while(rs.next()) {
-				companyList.add(mapper.toEntity(rs));
-			}
-		}
-		catch(SQLException e) {
-			// TODO
-			e.printStackTrace();
-		}
-		return companyList;
+		return this.jdbcTemplate.query(listQuery, new CompanyRowMapper());
 	}
 	
 	public Company getCompanyById(int id) {
-		Company company = null;
-		try(Connection conn = dbconn.getConnection();
-			PreparedStatement prepStmt = conn.prepareStatement(getByIdQuery)) {
-			prepStmt.setInt(1, id);
-			ResultSet rs = prepStmt.executeQuery();
-			while(rs.next())
-				company = mapper.toEntity(rs);
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-		}
-		return company;
+		return this.jdbcTemplate.queryForObject(getByIdQuery, new Object[]{ id }, new CompanyRowMapper());
 	}
 	
 	public int getCompanyIdByName(String name) {
-		int id = 0;
-		try(Connection conn = dbconn.getConnection();
-			PreparedStatement prepStmt = conn.prepareStatement(getIdByNameQuery)) {
-			prepStmt.setString(1, name);
-			ResultSet rs = prepStmt.executeQuery();
-			while(rs.next())
-				id = rs.getInt("id");
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-		}
-		return id;
+		return this.jdbcTemplate.queryForObject(getIdByNameQuery, new Object[] { name }, Integer.class);
 	}
 	
-	public void deleteCompanyById(int id, Connection conn) throws SQLException {
-		PreparedStatement prepStmt = null;
+	public void deleteCompanyById(int id) {
+		DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
+		TransactionStatus status = transManager.getTransaction(transDef);
 		try {
-			prepStmt = conn.prepareStatement(deleteQuery);
-			prepStmt.setInt(1, id);
-			prepStmt.executeUpdate();
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			conn.rollback();
-		}
-		finally {
-			conn.setAutoCommit(true);
-			prepStmt.close();
+			computerDao.deleteComputersByCompanyId(id);
+			this.jdbcTemplate.update(deleteQuery, id);
+			transManager.commit(status);
+		} catch(Exception e) {
+			transManager.rollback(status);	
 		}
 	}
 
