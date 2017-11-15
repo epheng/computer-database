@@ -27,11 +27,12 @@ import service.DatabaseService;
 @Controller
 public class DashboardServlet extends HttpServlet {
 	
-
 	@Autowired
 	ComputerMapper mapper;
+	
 	@Autowired
 	CompanyMapper companyMapper;
+	
 	@Autowired
 	DatabaseService service;
 	
@@ -77,13 +78,11 @@ public class DashboardServlet extends HttpServlet {
 		setPagination(request);
 		List<Computer> computerList = service.findComputers(nbPage, nbComputerPerPage);
 		List<ComputerDTO> computerDtoList = initComputerDtoList(computerList);
-		int totalNbComputers = service.countComputers();
-		
+		int totalNbComputers = service.countComputers();		
 		List<Company> companyList = service.findAllCompanies();
 		List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
 		
-		request.setAttribute("companies", companyDtoList);
-		
+		request.setAttribute("companies", companyDtoList);		
 		request.setAttribute("computerDtoList", computerDtoList);
 		request.setAttribute("nbComputer", totalNbComputers);
 		request.setAttribute("currentNbPage", nbPage);
