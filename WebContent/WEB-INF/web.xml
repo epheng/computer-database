@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app>
-	<servlet>
+	<!-- <servlet>
 		<servlet-name>Dashboard</servlet-name>
 		<servlet-class>servlet.DashboardServlet</servlet-class>
 	</servlet>
@@ -9,5 +9,19 @@
 		<url-pattern>/dashboard</url-pattern>
 		<url-pattern>/editComputer</url-pattern>
 		<url-pattern>/addComputer</url-pattern>
+	</servlet-mapping> -->
+	
+	<servlet>
+		<servlet-name>computerdatabase</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>computerdatabase</servlet-name>
+		<url-pattern>/dashboard</url-pattern>
+		<url-pattern>/editComputer</url-pattern>
+		<url-pattern>/addComputer</url-pattern>
 	</servlet-mapping>
+	
 </web-app>

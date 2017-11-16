@@ -6,8 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,15 +39,13 @@ public class DatabaseService {
 		}
 	}
 	
-	public void addComputer(HttpServletRequest request) {
-		String name = request.getParameter("computerName");
-		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+	public void addComputer(String companyName, String intro, String disco, String company) {
+		Timestamp introduced = parseTimestamp(intro);
 		Timestamp introducedDate = introduced == null ? null : introduced;
-		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinued = parseTimestamp(disco);
 		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
-		String company = request.getParameter("companyId");
 		int companyId = getCompanyIdbyName(company);
-		computerDao.createComputer(name, introducedDate, discontinuedDate, companyId);
+		computerDao.createComputer(companyName, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public int getCompanyIdbyName(String name) {
@@ -69,25 +65,22 @@ public class DatabaseService {
 		return computerDao.countComputers();
 	}
 	
-	public void updateComputer(HttpServletRequest request) {
-		int computerId = Integer.parseInt(request.getParameter("id"));
-		String name = request.getParameter("computerName");
-		Timestamp introduced = parseTimestamp(request.getParameter("introduced"));
+	public void updateComputer(String id, String companyName, String intro, String disco, String company) {
+		int computerId = Integer.parseInt(id);
+		Timestamp introduced = parseTimestamp(intro);
 		Timestamp introducedDate = introduced == null ? null : introduced;
-		Timestamp discontinued = parseTimestamp(request.getParameter("discontinued"));
+		Timestamp discontinued = parseTimestamp(disco);
 		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
-		String company = request.getParameter("companyId");
 		int companyId = getCompanyIdbyName(company);
-		computerDao.updateComputerById(computerId, name, introducedDate, discontinuedDate, companyId);
+		computerDao.updateComputerById(computerId, companyName, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public void deleteComputerById(int id) {
 		computerDao.deleteComputerById(id);
 	}
 	
-	public void deleteComputers(HttpServletRequest request) {
-		String computerIds = request.getParameter("selection");
-		String[] ids = computerIds.split(",");
+	public void deleteComputers(String selection) {
+		String[] ids = selection.split(",");
 		for(String id : ids) {
 			deleteComputerById(Integer.parseInt(id));
 		}
@@ -97,13 +90,12 @@ public class DatabaseService {
 		return companyDao.listAllCompanies();
 	}
 	
-	public List<Computer> searchComputersByNameOrCompany(HttpServletRequest request) {
-		String match = request.getParameter("search");
+	public List<Computer> searchComputersByNameOrCompany(String match) {
 		return computerDao.findComputersByNameOrCompany(match);
 	}
 	
-	public void deleteCompany(HttpServletRequest request) {
-		int companyId = Integer.parseInt(request.getParameter("selectionCompany"));
+	public void deleteCompany(String selectionCompany) {
+		int companyId = Integer.parseInt(selectionCompany);
 		companyDao.deleteCompanyById(companyId);
 	}
 	
