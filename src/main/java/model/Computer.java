@@ -12,6 +12,13 @@ public class Computer {
 	
 	public Computer() {}
 	
+	public Computer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.companyId = companyId;
+	}
+	
 	public Computer(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
 		this.id = id;
 		this.name = name;

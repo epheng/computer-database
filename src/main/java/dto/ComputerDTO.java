@@ -1,12 +1,31 @@
 package dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.springframework.stereotype.Component;
+
+@Component
 public class ComputerDTO {
 	
 	private String id;
+	
+	@Size(min = 2, max = 20)
 	private String name;
+	
+	@Pattern(regexp = "^(?:(0[1-9]|[12]\\d|3[01])(\\/|-)(0[1-9]|1[012])(\\/|-)\\d\\d(\\d\\d)?|\\d\\d\\d\\d-(0[1-9]|1[012])-(0[1-9]|[12]\\d|3[01])|)$",
+			message = "Enter a valid date")
 	private String introduced;
+	
+	@Pattern(regexp = "^(?:(0[1-9]|[12]\\d|3[01])(\\/|-)(0[1-9]|1[012])(\\/|-)\\d\\d(\\d\\d)?|\\d\\d\\d\\d-(0[1-9]|1[012])-(0[1-9]|[12]\\d|3[01])|)$",
+			message = "Enter a valid date")
 	private String discontinued;
+	
+	@NotNull
 	private String company;
+	
+	public ComputerDTO() {}
 	
 	public ComputerDTO(String id, String name, String introduced, String discontinued, String company) {
 		this.id = id;

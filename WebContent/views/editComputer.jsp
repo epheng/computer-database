@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,26 +28,27 @@
                     </div>
                     <h1>Edit Computer</h1>
 
-                    <form action="editComputer" method="POST" id="form">
-                        <input type="hidden" value="${computer.id}" id="id" name="id"/> <!-- TODO: Change this value with the computer id -->
+                    <form:form action="editComputer" method="POST" id="form" modelAttribute="computerDto">
+                        <input type="hidden" value="${computer.id}" id="id" name="id"/>
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}">
-                                <p>${emptyName}</p>
+                                <form:input path="name" type="text" class="form-control" id="computerName" name="computerName" value="${computer.name}"/>
+                                <form:errors path="name"/>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" value="${computer.introduced}">
+                                <form:input path="introduced" type="date" class="form-control" id="introduced" name="introduced" value="${computer.introduced}"/>
+                                <form:errors path="introduced"/>
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" value="${computer.discontinued}">
+                                <form:input path="discontinued" type="date" class="form-control" id="discontinued" name="discontinued" value="${computer.discontinued}"/>
+                                <form:errors path="discontinued"/>
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
-                                <select class="form-control" id="companyId" name="companyId">
-                                    <!-- <option value="0">--</option> -->
+                                <form:select path="company" class="form-control" id="companyId" name="companyId">
                                     <c:forEach items="${companies}" var="company">
 	                                    <c:choose>
 	                                    	<c:when test="${company.name == computer.company}">
@@ -57,7 +59,7 @@
 	                                    	</c:otherwise>
 	                                    </c:choose>
                                     </c:forEach>
-                                </select>
+                                </form:select>
                             </div>
                         </fieldset>
                         <div class="actions pull-right">
@@ -65,7 +67,7 @@
                             or
                             <a href="dashboard" class="btn btn-default">Cancel</a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>

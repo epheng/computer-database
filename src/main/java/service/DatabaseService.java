@@ -39,13 +39,12 @@ public class DatabaseService {
 		}
 	}
 	
-	public void addComputer(String companyName, String intro, String disco, String company) {
-		Timestamp introduced = parseTimestamp(intro);
-		Timestamp introducedDate = introduced == null ? null : introduced;
-		Timestamp discontinued = parseTimestamp(disco);
-		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
-		int companyId = getCompanyIdbyName(company);
-		computerDao.createComputer(companyName, introducedDate, discontinuedDate, companyId);
+	public void addComputer(Computer computer) {
+		String computerName = computer.getName();
+		Timestamp introducedDate = computer.getIntroduced();
+		Timestamp discontinuedDate = computer.getDiscontinued();
+		int companyId = computer.getCompanyId();
+		computerDao.createComputer(computerName, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public int getCompanyIdbyName(String name) {
@@ -65,14 +64,13 @@ public class DatabaseService {
 		return computerDao.countComputers();
 	}
 	
-	public void updateComputer(String id, String companyName, String intro, String disco, String company) {
-		int computerId = Integer.parseInt(id);
-		Timestamp introduced = parseTimestamp(intro);
-		Timestamp introducedDate = introduced == null ? null : introduced;
-		Timestamp discontinued = parseTimestamp(disco);
-		Timestamp discontinuedDate = discontinued == null ? null : discontinued;
-		int companyId = getCompanyIdbyName(company);
-		computerDao.updateComputerById(computerId, companyName, introducedDate, discontinuedDate, companyId);
+	public void updateComputer(Computer computer) {
+		int computerId = computer.getId();
+		String computerName = computer.getName();
+		Timestamp introducedDate = computer.getIntroduced();
+		Timestamp discontinuedDate = computer.getDiscontinued();
+		int companyId = computer.getCompanyId();
+		computerDao.updateComputerById(computerId, computerName, introducedDate, discontinuedDate, companyId);
 	}
 	
 	public void deleteComputerById(int id) {

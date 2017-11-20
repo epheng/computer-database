@@ -1,14 +1,19 @@
-package servlet;
+package controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import dto.CompanyDTO;
 import dto.ComputerDTO;
@@ -85,6 +90,7 @@ public class ControllerCDB {
 		List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
 		model.addAttribute("computer", computerDto);
 		model.addAttribute("companies", companyDtoList);
+		model.addAttribute("computerDto", new ComputerDTO());
 		return "editComputer";
 	}
 	
@@ -93,29 +99,34 @@ public class ControllerCDB {
 		List<Company> companyList = service.findAllCompanies();
 		List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
 		model.addAttribute("companies", companyDtoList);
+		model.addAttribute("computerDto", new ComputerDTO());
 		return "addComputer";
 	}
 	
 	@RequestMapping(value = "/addComputer", method = RequestMethod.POST)
-	public String createComputer(
-			@RequestParam(value = "computerName") String computerName,
-			@RequestParam(value = "introduced") String introduced,
-			@RequestParam(value = "discontinued") String discontinued,
-			@RequestParam(value = "companyId") String company) {
-		System.out.println("la");
-		service.addComputer(computerName, introduced, discontinued, company);
-		return "redirect:dashboard";
+	public String createComputer(@ModelAttribute("computerDto") @Valid ComputerDTO computerDto, BindingResult result, ModelMap model) {
+		if(result.hasErrors()) {
+			List<Company> companyList = service.findAllCompanies();
+			List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
+			model.addAttribute("companies", companyDtoList);
+			return "addComputer";
+		} else {
+			service.addComputer(computerMapper.toComputer(computerDto));
+			return "redirect:dashboard";
+		}
 	}
-	
+
 	@RequestMapping(value = "/editComputer", method = RequestMethod.POST)
-	public String updateComputer(
-			@RequestParam(value = "id") String computerId,
-			@RequestParam(value = "computerName") String computerName,
-			@RequestParam(value = "introduced") String introduced,
-			@RequestParam(value = "discontinued") String discontinued,
-			@RequestParam(value = "companyId") String company) {
-		service.updateComputer(computerId, computerName, introduced, discontinued, company);
-		return "redirect:dashboard";
+	public String updateComputer(@ModelAttribute("computerDto") @Valid ComputerDTO computerDto, BindingResult result, ModelMap model) {
+		if(result.hasErrors()) {
+			List<Company> companyList = service.findAllCompanies();
+			List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
+			model.addAttribute("companies", companyDtoList);
+			return "editComputer";
+		} else {
+			service.updateComputer(computerMapper.toComputer(computerDto));
+			return "redirect:dashboard";
+		}
 	}
 	
 	@RequestMapping(value = "/dashboard", method = RequestMethod.POST)
