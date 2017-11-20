@@ -1,4 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +22,7 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                ${nbComputer} Computers found
+                ${nbComputer} <spring:message code="dashboard.computers_found"/>
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
