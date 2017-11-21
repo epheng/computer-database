@@ -1,10 +1,14 @@
 package dao;
 
+import java.io.IOException;
+import java.util.Properties;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -41,6 +45,25 @@ public class DatabaseConfig {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(); 
 	    transactionManager.setDataSource(getDataSource()); 
 	    return transactionManager;
+	}
+	
+	private Properties hibernateProperties() {
+		Properties prop = new Properties();
+		try {
+			prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/hibernate.properties"));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		return prop;
+	}
+	
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(getDataSource());
+		sessionFactory.setPackagesToScan(new String[] {"model"});
+		sessionFactory.setHibernateProperties(hibernateProperties());
+		return sessionFactory;
 	}
 	
 }

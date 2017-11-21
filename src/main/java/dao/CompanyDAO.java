@@ -1,18 +1,14 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
-import javax.sql.DataSource;
-
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import mapper.CompanyMapper;
 import model.Company;
@@ -25,49 +21,73 @@ public class CompanyDAO {
 	
 	@Autowired
 	ComputerDAO computerDao;
-	
+	/*
 	@Autowired
 	private PlatformTransactionManager transManager;
 	
 	private JdbcTemplate jdbcTemplate;
-
+	
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
+	*/
+	@Autowired
+	private SessionFactory sessionFactory;
 
-	private String listQuery = "SELECT * FROM company";
-	private String getByIdQuery = "SELECT * FROM company WHERE id = ?";
-	private String getIdByNameQuery = "SELECT id FROM company WHERE name = ?";
-	private String deleteQuery = "DELETE FROM company WHERE id = ?";
-	
-	private class CompanyRowMapper implements RowMapper<Company> {
-		public Company mapRow(ResultSet rs, int rowNb) throws SQLException {
-			return mapper.toEntity(rs);
-		}
-	}
+	private String listQuery = "FROM Company";
+	private String getByIdQuery = "FROM Company WHERE id = :id";
+	private String getIdByNameQuery = "SELECT C.id FROM Company C WHERE C.name = :name";
+	private String deleteQuery = "DELETE Company WHERE id = :id";
 	
 	public List<Company> listAllCompanies() {
-		return this.jdbcTemplate.query(listQuery, new CompanyRowMapper());
+		List<Company> list = null;
+		try(Session session = sessionFactory.openSession();) {
+			Query<Company> query = session.createQuery(listQuery);
+			list = query.list();
+		} catch(HibernateException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 	
 	public Company getCompanyById(int id) {
-		return this.jdbcTemplate.queryForObject(getByIdQuery, new Object[]{ id }, new CompanyRowMapper());
+		Company company = null;
+		try(Session session = sessionFactory.openSession();) {
+			Query<Company> query = session.createQuery(getByIdQuery);
+			query.setParameter("id", id);
+			company = query.uniqueResult();
+		} catch(HibernateException e) {
+			e.printStackTrace();
+		}
+		return company;
 	}
 	
 	public int getCompanyIdByName(String name) {
-		return this.jdbcTemplate.queryForObject(getIdByNameQuery, new Object[] { name }, Integer.class);
+		int id = 0;
+		try(Session session = sessionFactory.openSession();) {
+			Query<Integer> query = session.createQuery(getIdByNameQuery);
+			query.setParameter("name", name);
+			id = query.uniqueResult();
+		} catch(HibernateException e) {
+			e.printStackTrace();
+		}
+		return id;
 	}
 	
 	public void deleteCompanyById(int id) {
-		DefaultTransactionDefinition transDef = new DefaultTransactionDefinition();
-		TransactionStatus status = transManager.getTransaction(transDef);
-		try {
+		Transaction tx = null;
+		try(Session session = sessionFactory.openSession();) {
+			tx = session.beginTransaction();
 			computerDao.deleteComputersByCompanyId(id);
-			this.jdbcTemplate.update(deleteQuery, id);
-			transManager.commit(status);
-		} catch(Exception e) {
-			transManager.rollback(status);	
+//			this.jdbcTemplate.update(deleteQuery, id);
+			Query<Company> query = session.createQuery(deleteQuery);
+			query.setParameter("id", id);
+			query.executeUpdate();
+			tx.commit();
+		} catch(HibernateException e) {
+			tx.rollback();
+			e.printStackTrace();
 		}
 	}
 

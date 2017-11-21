@@ -66,10 +66,13 @@ public class DatabaseService {
 	
 	public void updateComputer(Computer computer) {
 		int computerId = computer.getId();
+		Computer originalComputer = findComputerById(computerId);
+		
 		String computerName = computer.getName();
 		Timestamp introducedDate = computer.getIntroduced();
 		Timestamp discontinuedDate = computer.getDiscontinued();
 		int companyId = computer.getCompanyId();
+		
 		computerDao.updateComputerById(computerId, computerName, introducedDate, discontinuedDate, companyId);
 	}
 	

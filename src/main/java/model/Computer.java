@@ -2,13 +2,30 @@ package model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="computer")
 public class Computer {
 	
+	@Id
+	@Column(name="id")
 	private int id;
+	
+	@Column(name="name")
 	private String name;
+	
+	@Column(name="introduced")
 	private Timestamp introduced;
+	
+	@Column(name="discontinued")
 	private Timestamp discontinued;
-	private int companyId;
+	
+	@Column(name="company_id")
+	private Integer companyId;
 	
 	public Computer() {}
 	
@@ -60,7 +77,7 @@ public class Computer {
 	}
 	
 	public int getCompanyId() {
-		return companyId;
+		return companyId == null ? 0 : companyId;
 	}
 	
 	public void setCompanyId(int companyId) {
