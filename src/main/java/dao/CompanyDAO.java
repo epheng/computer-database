@@ -10,35 +10,20 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import mapper.CompanyMapper;
 import model.Company;
 
 @Component
 public class CompanyDAO {
-
-	@Autowired
-	CompanyMapper mapper;
 	
 	@Autowired
-	ComputerDAO computerDao;
-	/*
-	@Autowired
-	private PlatformTransactionManager transManager;
+	private ComputerDAO computerDao;
 	
-	private JdbcTemplate jdbcTemplate;
-	
-	@Autowired
-	public void setDataSource(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-	*/
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	private String listQuery = "FROM Company";
-	private String getByIdQuery = "FROM Company WHERE id = :id";
-	private String getIdByNameQuery = "SELECT C.id FROM Company C WHERE C.name = :name";
-	private String deleteQuery = "DELETE Company WHERE id = :id";
+	private final String listQuery = "FROM Company";
+	private final String getByIdQuery = "FROM Company WHERE id = :id";
+	private final String getIdByNameQuery = "SELECT C.id FROM Company C WHERE C.name = :name";
 	
 	public List<Company> listAllCompanies() {
 		List<Company> list = null;
@@ -80,14 +65,12 @@ public class CompanyDAO {
 		try(Session session = sessionFactory.openSession();) {
 			tx = session.beginTransaction();
 			computerDao.deleteComputersByCompanyId(id);
-//			this.jdbcTemplate.update(deleteQuery, id);
-			Query<Company> query = session.createQuery(deleteQuery);
-			query.setParameter("id", id);
-			query.executeUpdate();
+			Company company = new Company();
+			company.setId(id);
+			session.delete(company);
 			tx.commit();
 		} catch(HibernateException e) {
 			tx.rollback();
-			e.printStackTrace();
 		}
 	}
 

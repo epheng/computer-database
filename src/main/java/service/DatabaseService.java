@@ -1,9 +1,6 @@
 package service;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +23,6 @@ public class DatabaseService {
 	
 	@Autowired
 	CompanyDAO companyDao;
-	
-	public Timestamp parseTimestamp(String s) {
-		try {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			Date parsedDate = dateFormat.parse(s);
-			Timestamp timestamp = new Timestamp(parsedDate.getTime());
-			return timestamp;
-		}
-		catch(ParseException e) {
-			return null;
-		}
-	}
 	
 	public void addComputer(Computer computer) {
 		String computerName = computer.getName();
@@ -73,7 +58,12 @@ public class DatabaseService {
 		Timestamp discontinuedDate = computer.getDiscontinued();
 		int companyId = computer.getCompanyId();
 		
-		computerDao.updateComputerById(computerId, computerName, introducedDate, discontinuedDate, companyId);
+		String updatedName = computerName.isEmpty() ? originalComputer.getName() : computerName;
+		Timestamp updatedIntroduced = introducedDate == null ? originalComputer.getIntroduced() : introducedDate;
+		Timestamp updatedDiscontinued = discontinuedDate == null ? originalComputer.getDiscontinued() : discontinuedDate;
+		int updatedCompanyId = companyId == 0 ? originalComputer.getCompanyId() : companyId;
+		
+		computerDao.updateComputerById(computerId, updatedName, updatedIntroduced, updatedDiscontinued, updatedCompanyId);
 	}
 	
 	public void deleteComputerById(int id) {

@@ -28,7 +28,7 @@
                     <form:form action="addComputer" method="POST" id="form" modelAttribute="computerDto">
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer name  (at least 3 characters)</label>
+                                <label for="computerName">Computer name  (at least 2 characters)</label>
                                 <form:input path="name" type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name"/>
                                 <form:errors path="name"/>
                             </div>

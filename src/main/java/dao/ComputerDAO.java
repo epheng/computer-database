@@ -1,11 +1,7 @@
 package dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -13,48 +9,21 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import mapper.ComputerMapper;
 import model.Computer;
 
 @Repository
 public class ComputerDAO {
-
-	@Autowired
-	private ComputerMapper mapper;
-	
-	private JdbcTemplate jdbcTemplate;
-	
-	@Autowired
-	public void setDataSource(DataSource dataSource) {
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
 	
 	@Autowired
 	private SessionFactory sessionFactory;
 
-//	private String findQuery = "SELECT * FROM computer WHERE id = ?";
-	private String findQuery = "FROM Computer WHERE id = :id";
-//	private String findSomeQuery = "SELECT * FROM computer LIMIT ? OFFSET ?";
-	private String findSomeQuery = "FROM Computer";
-	private String findByNameOrCompanyQuery = "SELECT * FROM computer JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? OR company.name LIKE ?";
-//	private String deleteQuery = "DELETE FROM computer WHERE id = ?";
-	private String deleteQuery = "DELETE Computer WHERE id = :id";
-//	private String deleteByCompanyQuery = "DELETE FROM computer WHERE company_id = ?";
-	private String deleteByCompanyQuery = "DELETE Computer WHERE company_id = :id";
-//	private String countQuery = "SELECT COUNT(*) AS count FROM computer";
-	private String countQuery = "SELECT COUNT(*) FROM Computer";
-	private String createQuery = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
-	private String updateQuery = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	
-	private class ComputerRowMapper implements RowMapper<Computer> {
-		public Computer mapRow(ResultSet rs, int rowNb) throws SQLException {
-			return mapper.toEntity(rs);
-		}
-	}
+	private final String findQuery = "FROM Computer WHERE id = :id";
+	private final String findSomeQuery = "FROM Computer";
+	private final String findByNameOrCompanyQuery = "FROM Computer WHERE name LIKE :name";
+	private final String deleteByCompanyQuery = "DELETE Computer WHERE company_id = :id";
+	private final String countQuery = "SELECT COUNT(*) FROM Computer";
 	
 	public List<Computer> findComputers(int firstId, int nbComputerPerPage) {
 		List<Computer> list = null;
@@ -82,7 +51,15 @@ public class ComputerDAO {
 	}
 	
 	public List<Computer> findComputersByNameOrCompany(String match) {
-		return this.jdbcTemplate.query(findByNameOrCompanyQuery, new Object[] { "%" + match + "%", "%" + match + "%" }, new ComputerRowMapper());
+		List<Computer> list = null;
+		try(Session session = sessionFactory.openSession();) {
+			Query<Computer> query = session.createQuery(findByNameOrCompanyQuery);
+			query.setParameter("name", "%" + match + "%");
+			list = query.list();
+		} catch(HibernateException e) {
+			e.printStackTrace();
+		}
+		return list;
 	}
 	
 	public int countComputers() {
@@ -97,20 +74,19 @@ public class ComputerDAO {
 	}
 	
 	public void deleteComputerById(int id) {
-//		this.jdbcTemplate.update(deleteQuery, id);
+		Transaction tx = null;
 		try(Session session = sessionFactory.openSession();) {
-			Transaction tx = session.beginTransaction();
-			Query<Computer> query = session.createQuery(deleteQuery);
-			query.setParameter("id", id);
-			query.executeUpdate();
+			tx = session.beginTransaction();
+			Computer computer = new Computer();
+			computer.setId(id);
+			session.delete(computer);
 			tx.commit();
 		} catch(HibernateException e) {
-			e.printStackTrace();
+			tx.rollback();
 		}
 	}
 
 	public void deleteComputersByCompanyId(int id) {
-//		this.jdbcTemplate.update(deleteByCompanyQuery, id);
 		Transaction tx = null;
 		try(Session session = sessionFactory.openSession();) {
 			tx = session.beginTransaction();
@@ -120,23 +96,31 @@ public class ComputerDAO {
 			tx.commit();
 		} catch(HibernateException e) {
 			tx.rollback();
-			e.printStackTrace();
 		}
 	}
 	
 	public void createComputer(String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		this.jdbcTemplate.update(createQuery, name, introduced, discontinued, companyId);
+		Transaction tx = null;
+		try(Session session = sessionFactory.openSession();) {
+			tx = session.beginTransaction();
+			Computer computer = new Computer(name, introduced, discontinued, companyId);
+			session.save(computer);
+			tx.commit();
+		} catch(HibernateException e) {
+			tx.rollback();
+		}
 	}
 	
 	public void updateComputerById(int id, String name, Timestamp introduced, Timestamp discontinued, int companyId) {
-		Computer originalComputer = findComputerById(id);
-
-		String updatedName = name.isEmpty() ? originalComputer.getName() : name;
-		Timestamp updatedIntroduced = introduced == null ? originalComputer.getIntroduced() : introduced;
-		Timestamp updatedDiscontinued = discontinued == null ? originalComputer.getDiscontinued() : discontinued;
-		int updatedCompanyId = companyId == 0 ? originalComputer.getCompanyId() : companyId;
-
-		this.jdbcTemplate.update(updateQuery, updatedName, updatedIntroduced, updatedDiscontinued, updatedCompanyId, id);
+		Transaction tx = null;
+		try(Session session = sessionFactory.openSession();) {
+			tx = session.beginTransaction();
+			Computer computer = new Computer(id, name, introduced, discontinued, companyId);
+			session.update(computer);
+			tx.commit();
+		} catch(HibernateException e) {
+			tx.rollback();
+		}
 	}
 
 }

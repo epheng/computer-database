@@ -1,8 +1,6 @@
 package mapper;
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,21 +18,6 @@ public class ComputerMapper {
 	
 	@Autowired
 	CompanyDAO companyDao;
-	
-	public Computer toEntity(ResultSet rs) {
-		Computer computer = new Computer();
-		try {
-			computer.setId(rs.getInt("id"));
-			computer.setName(rs.getString("name"));
-			computer.setIntroduced(rs.getTimestamp("introduced"));
-			computer.setDiscontinued(rs.getTimestamp("discontinued"));
-			computer.setCompanyId(rs.getInt("company_id"));
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-		}
-		return computer;
-	}
 	
 	public String removeDateTime(String date) {
 		String[] parts = date.split(" ");

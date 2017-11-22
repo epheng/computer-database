@@ -121,6 +121,7 @@ public class ControllerCDB {
 			List<Company> companyList = service.findAllCompanies();
 			List<CompanyDTO> companyDtoList = initCompanyDtoList(companyList);
 			model.addAttribute("companies", companyDtoList);
+			model.addAttribute("computer", computerDto);
 			return "editComputer";
 		} else {
 			service.updateComputer(computerMapper.toComputer(computerDto));
