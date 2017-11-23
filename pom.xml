@@ -1,140 +1,54 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>computer-database</groupId>
-  <artifactId>computer-database</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
-  <packaging>war</packaging>
-  <properties>
-  	<slf4j-version>1.7.25</slf4j-version>
-  	<mysql-connector-version>6.0.6</mysql-connector-version>
-  	<junit-version>4.12</junit-version>
-  	<mockito-version>1.10.19</mockito-version>
+  <groupId>com.excilys</groupId>
+  <artifactId>computerdatabase</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  
+  <modules>
+  	<module>core</module>
+  	<module>persistence</module>
+  	<module>service</module>
+  	<module>binding</module>
+  	<module>webapp</module>
+  </modules>
+  
+  <!-- <properties>
   	<java-servlet-version>2.5</java-servlet-version>
   	<jstl-version>1.2</jstl-version>
-  	<selenium-version>3.7.0</selenium-version>
-  	<hikaricp-version>2.7.1</hikaricp-version>
-  	<spring-version>4.3.12.RELEASE</spring-version>
-  	<logback-version>1.2.3</logback-version>
-  	<javax-validation-version>1.1.0.Final</javax-validation-version>
-  	<hibernate-validator-version>5.4.1.Final</hibernate-validator-version>
-  	<hibernate-version>5.2.12.Final</hibernate-version>
   </properties>
+  
   <dependencies>
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-orm</artifactId>
-	    <version>${spring-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.hibernate</groupId>
-	    <artifactId>hibernate-core</artifactId>
-	    <version>${hibernate-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.hibernate</groupId>
-	    <artifactId>hibernate-validator</artifactId>
-	    <version>${hibernate-validator-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>javax.validation</groupId>
-	    <artifactId>validation-api</artifactId>
-	    <version>${javax-validation-version}</version>
-	</dependency>
-	<dependency>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-classic</artifactId>
-		<version>${logback-version}</version>
-	</dependency>
   	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-jdbc</artifactId>
-		<version>${spring-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-webmvc</artifactId>
-	    <version>${spring-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>com.zaxxer</groupId>
-	    <artifactId>HikariCP</artifactId>
-	    <version>${hikaricp-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.slf4j</groupId>
-	    <artifactId>slf4j-api</artifactId>
-	    <version>${slf4j-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>${mysql-connector-version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>${junit-version}</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-	    <groupId>org.mockito</groupId>
-	    <artifactId>mockito-all</artifactId>
-	    <version>${mockito-version}</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
 	    <groupId>javax.servlet</groupId>
 	    <artifactId>servlet-api</artifactId>
 	    <version>${java-servlet-version}</version>
 	</dependency>
-	<dependency>
+  	<dependency>
 	    <groupId>javax.servlet</groupId>
 	    <artifactId>jstl</artifactId>
 	    <version>${jstl-version}</version>
 	</dependency>
-	<dependency>
-	    <groupId>org.seleniumhq.selenium</groupId>
-	    <artifactId>selenium-java</artifactId>
-	    <version>${selenium-version}</version>
-	</dependency>
-  </dependencies>
+  </dependencies> -->
+  
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <plugins>
-    <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.0.0</version>
-        <configuration>
-          <warSourceDirectory>WebContent</warSourceDirectory>
-        </configuration>
-      </plugin>
-    </plugins>
+	<plugins>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.7.0</version>
+			<configuration>
+				<source>1.8</source>
+				<target>1.8</target>
+			</configuration>
+		</plugin>
+		<plugin>            
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-war-plugin</artifactId>
+		  <configuration>
+		    <webXml>WebContent/WEB-INF/web.xml</webXml>        
+		  </configuration>
+		</plugin>
+	</plugins>
   </build>
-  <reporting>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.17</version>
-          <configuration>
-          	<configLocation>config/checkstyle/checkstyle.xml</configLocation>
-          </configuration>
-          <reportSets>
-            <reportSet>
-              <reports>
-                <report>checkstyle</report>
-              </reports>
-            </reportSet>
-          </reportSets>
-        </plugin>
-      </plugins>
-    </reporting>
+  
 </project>
